@@ -110,8 +110,7 @@ dias_por_mes = {
 voos = []
 passagem_props = {
     'num': '',
-    'cod_origem': '',
-    'cod_destino': '',
+    'cods_aeroportos': '',
     'data': '',
     'preco': '',
 }
@@ -138,9 +137,10 @@ def registrar():
         passagem_props.update({p:valor})
 
     num = int(passagem_props.get('num'))
-    cod_origem = passagem_props.get('cod_origem')
-    cod_destino = passagem_props.get('cod_destino')
-    data = Data(formatar_data(passagem_props.get('data')))
+    cod_origem = passagem_props.get('cods_aeroportos').split()[0]
+    cod_destino = passagem_props.get('cods_aeroportos').split()[1]
+    dia, mes, ano = formatar_data(passagem_props.get('data'))
+    data = Data(dia, mes, ano)
     preco = float(passagem_props.get('preco'))
 
     voo = Voo(num, cod_origem, cod_destino, data, preco)
@@ -149,7 +149,7 @@ def registrar():
 def alterar(num_voo, valor):
     voo = encontrar_voo(int(num_voo))
     preco_antes = voo.preco
-    voo.preco(float(valor))
+    voo.preco = float(valor)
     print(f"{num_voo} valor alterado de {preco_antes} para {voo.preco}")
 
 def cancelar(num_voo):
@@ -172,8 +172,10 @@ for linha in stdin:
     elif linha == 'planejar':
         jarzinho_aeroporto = input().strip()
         data_inicio_ferias, data_fim_ferias = input().strip().split()
-        data_inicio_ferias = Data(formatar_data(data_inicio_ferias))
-        data_fim_ferias = Data(formatar_data(data_fim_ferias))
+        dia, mes, ano = formatar_data(data_inicio_ferias)
+        data_inicio_ferias = Data(dia, mes, ano)
+        dia, mes, ano = formatar_data(data_fim_ferias)
+        data_fim_ferias = Data(dia, mes, ano)
         
         dia_limite = data_fim_ferias.dia - 3
         mes_limite = data_fim_ferias.mes
