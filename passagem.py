@@ -1,8 +1,23 @@
 # RA 260240
 
-# Se necessario importe suas bibliotecas aqui
 from sys import stdin
 
+"""
+    Classe Data:
+        propriedades:
+            - dia (int)
+            - mes (int)
+            - ano (int)
+        métodos:
+            - eh_maior(data) -> boolean
+                compara se a instância atual é maior do que o objeto Data passado nos parâmetros
+            - eh_menor(data) -> boolean
+                compara se a instância atual é menor do que o objeto Data passado nos parâmetros
+            - eh_igual(data) -> boolean
+                compara se a instância atual é igual ao objeto Data passado nos parâmetros
+            - somar_subtrair_dias(dias)
+                soma o número de dias passado no parâmetro ao objeto, fazendo alterações no mês e ano caso necessárias
+"""
 class Data:
     def __init__(self, dia, mes, ano):
         self._dia = dia
@@ -87,7 +102,15 @@ class Data:
         self._mes = mes
         self._ano = ano
 
-
+"""
+    Classe Voo:
+        propriedades:
+            - numero (int)
+            - aeroport_origem_cod (string)
+            - aeroport_destino_cod (string)
+            - data (Data)
+            - preco (float)
+"""
 class Voo:
     def __init__(self, numero, aeroport_origem_cod, aeroport_destino_cod, data, preco):
         self._numero = numero
@@ -136,18 +159,10 @@ class Voo:
     def preco(self, preco):
         self._preco = preco
 
-# Aqui em baixo fica a sua solucao
-
-
-
+# voo é um array de objetos do tipo Voo, que guardará os voos do arquivo de entrada.in
 voos = []
-passagem_props = {
-    'num': '',
-    'cods_aeroportos': '',
-    'data': '',
-    'preco': '',
-}
 
+# formatar_data(data) recebe um data do tipo string dd/mm/aaaa e retorna [dd, mm, aaaa]
 def formatar_data(data):
     d, m, a = map(int,data.split('/'))
     return d,m,a
@@ -164,6 +179,7 @@ def encontrar_voos_com_aeroporto_de_origem(codigo):
             res.append(voos[i])
     return res
 
+# encontrar_melhor_voo(array_voos, data_min, data_max) retorno o melhor voo encontrado no array passado conferindo se ele está dentro do período desejado e se tem o melhor preço
 def encontrar_melhor_voo(array_voos, data_min, data_max):
     melhor_voo = array_voos[0]
 
@@ -176,11 +192,20 @@ def encontrar_melhor_voo(array_voos, data_min, data_max):
 
     return melhor_voo
 
-def registrar():
+def registrar_voo():
+    passagem_props = {
+        'num': '',
+        'cods_aeroportos': '',
+        'data': '',
+        'preco': '',
+    }
+
+    # lê cada linha de registro e coloca seu valor no dicionário
     for p in passagem_props.keys():
         valor = input().strip()
         passagem_props.update({p:valor})
 
+    # faz as formatações dos valores do voo necessárias
     num = int(passagem_props.get('num'))
     cod_origem = passagem_props.get('cods_aeroportos').split()[0]
     cod_destino = passagem_props.get('cods_aeroportos').split()[1]
@@ -188,82 +213,61 @@ def registrar():
     data = Data(dia, mes, ano)
     preco = float(passagem_props.get('preco'))
 
+    # cria um novo objeto do tipo Voo e coloca no arrays geral de voos
     voo = Voo(num, cod_origem, cod_destino, data, preco)
     voos.append(voo)
 
-def alterar(num_voo, valor):
+def alterar_preco_voo(num_voo, valor):
     voo = encontrar_voo(int(num_voo))
     preco_antes = voo.preco
     voo.preco = float(valor)
     print(f"{num_voo} valor alterado de {preco_antes} para {voo.preco}")
 
-def cancelar(num_voo):
+def cancelar_voo(num_voo):
     voo = encontrar_voo(int(num_voo))
     voos.pop(voos.index(voo))
 
 for linha in stdin:
     linha = linha.strip()
+
     if linha == 'registrar':
-        registrar()
+        registrar_voo()
 
     elif linha == 'alterar':
         num_voo, valor = input().strip().split()
-        alterar(num_voo, valor)
+        alterar_preco_voo(num_voo, valor)
 
     elif linha == 'cancelar':
         num_voo = input().strip()
-        cancelar(num_voo)
+        cancelar_voo(num_voo)
 
     elif linha == 'planejar':
         jarzinho_aeroporto = input().strip()
         data_inicio_ferias, data_fim_ferias = input().strip().split()
+        
+        # formata a data de início de férias
         dia, mes, ano = formatar_data(data_inicio_ferias)
         data_inicio_ferias = Data(dia, mes, ano)
+        
+        # formata a data de fim de férias
         dia, mes, ano = formatar_data(data_fim_ferias)
         data_fim_ferias = Data(dia, mes, ano)
+        
+        # data_limite_passagem_ida recebe a data do fim menos 4, que é o período mímino de viajem que jarzinho deseja
         data_limite_passagem_ida = data_fim_ferias
         data_limite_passagem_ida.somar_subtrair_dias(-4)
-        
-        # dia_limite_ida = data_fim_ferias.dia - 3
-        # mes_limite_ida = data_fim_ferias.mes
-        # ano_limite_ida = data_fim_ferias.ano
-        
-        # if dia_limite_ida <= 0:
-        #     mes_limite_ida = data_fim_ferias.mes - 1
-        #     if mes_limite_ida == 0:
-        #         mes_limite_ida = 12
-        #         ano_limite_ida = data_fim_ferias.ano -1
-        #     dia_limite_ida = dias_por_mes.get(mes_limite_ida) - dia_limite_ida
-        
-        # data_limite_passagem_ida = Data(dia_limite_ida,mes_limite_ida,ano_limite_ida)
-        
-        voos_com_aeroporto_do_jarzinho = encontrar_voos_com_aeroporto_de_origem(jarzinho_aeroporto)
 
+        # filtra os voos que tem o aeroporto de ida que jarzinho quer, e depois encontra aquele dentro do limite de ida (data_inicio_ferias <= data <= data_limite_passagem_ida) e com o melhor preço
+        voos_com_aeroporto_do_jarzinho = encontrar_voos_com_aeroporto_de_origem(jarzinho_aeroporto)
         melhor_voo_ida = encontrar_melhor_voo(voos_com_aeroporto_do_jarzinho, data_inicio_ferias, data_limite_passagem_ida)
 
-        # melhor_voo_ida = voos_com_aeroporto_do_jarzinho[0]
-        
-        # for v in voos_com_aeroporto_do_jarzinho:
-        #     if v.data.eh_maior_ou_igual(data_inicio_ferias) == False and v.data.eh_maior_ou_igual(data_limite_passagem_ida) == True:
-        #         continue
-
-        #     if v.preco < melhor_voo_ida.preco:
-        #         melhor_voo_ida = v
-
+        # data_limite_passagem_volta recebe a data que ele ira embarcar mais 4 que é período mínimo da viajem
         data_limite_passagem_volta = data_limite_passagem_ida
         data_limite_passagem_volta.somar_subtrair_dias(4)
         
+        # filtra os voos que tem o mesmo aeroporto de ida igual do destino que jarzinho estará viajando, e depois encontra aquele dentro do limite de ida (data_limite_passagem_volta <= data <= data_fim_ferias) e com o melhor preço
         voos_retorno_viajem = encontrar_voos_com_aeroporto_de_origem(melhor_voo_ida.aeroport_destino_cod)
-
         melhor_voo_volta = encontrar_melhor_voo(voos_retorno_viajem, data_limite_passagem_volta, data_fim_ferias)
-        # melhor_voo_volta = voos_retorno_viajem[0]
-
-        # for v in voos_retorno_viajem:
-        #     if v.data.eh_maior_ou_igual(data_inicio_ferias) == False and v.data.eh_maior_ou_igual(data_limite_passagem_volta) == True:
-        #         continue
-
-        #     if v.preco < melhor_voo_volta.preco:
-        #         melhor_voo_volta = v
         
         print(melhor_voo_ida.numero)
         print(melhor_voo_volta.numero)
