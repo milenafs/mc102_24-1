@@ -1,81 +1,210 @@
-# Voo
+# Recursão
 
-Neste lab você está ajudando a planejar uma viagem e precisa descobrir qual voo é o mais adequado para suas férias. Para isso, utilize *classes* e seu conhecimento acumulado para resolver este problema.
+Você já aprendeu que algoritmos recursivos para um certo problema são procedimentos que incluem instruções para resolver instâncias menores para o mesmo problema. Por esse motivo, é importante entender claramente qual é o conjunto de entradas (ou instâncias) do problema e qual é o conjunto de soluções (ou saídas) do problema. Quando tentamos resolver um problema de maneira recursiva, temos que considerar um ou mais casos básico, que são exemplos de instâncias resolvidas diretamente, e os demais casos, quando uma solução é obtida a partir de uma solução de uma ou mais instâncias menores do problema.
 
-Criamos uma sala especial para dúvidas aqui: [Discord](https://discord.com/channels/1231947819334762527/1238466034642587708)
----
+O objetivo desta tarefa é começarmos a pensar recursivamente. Assim, é obrigatório resolver cada um dos problemas seguintes utilizando recursão, mesmo que você conheça um algoritmo iterativo mais eficiente. Uma das vantagens de recursão é que as funções recursivas são normalmente muito simples e elegantes. Se seu programa para alguma das questões abaixo parecer muito complicado, então pare e repense seu algoritmo. E não deixe de tirar as dúvidas que aparecerem no canal do [Discord](https://discord.gg/cWJEU95G6M), ou com os PED/PADS.
 
-Jairzinho sente que no futuro próximo precisará passar um tempo fora do país, mas apesar de 4 anos "juntando" dinheiro, a grana está curta. Por isso, ele deve economizar para sua viagem. Enquanto isso, ele acompanha os valores e planeja sua ~fuga~ férias. O destino não importa, desde que ele consiga voltar na data definida.
+## 1. Máximo
 
-Construa um programa para Jairzinho registrar as ofertas de voos que ele encontra e escolha a data de ida e volta ideal. Dentre todas as ofertas, ele deve comprar as passagens mais baratas de ida e volta cujas datas estejam pelo menos quatro dias dentro do seu período de "férias". Enquanto ele sonha com suas férias, muitas coisas podem acontecer, novas ofertas podem aparecer, os preços podem mudar, ou um voo pode ser cancelado. Para onde ele vai viajar?
+Dada uma lista de elementos, faça um programa `maximo.py` que encontra o maior elemento.
 
-## Entrada
+### Entrada
 
-A entrada contém várias operações. Cada uma consiste em uma linha com o nome da operação, que talvez é seguida de uma ou mais linhas com os parâmetros.
+Uma sequência de números separados por espaço.
 
-* **`registrar`**: registra um novo voo com os parâmetros: número do voo, código de três letras do aeroporto de origem, código de três letras do aeroporto de destino, data do voo no formato dd/mm/aaaa e valor em reais.
+`19 21 24 23 10 29 24 8 23 29 8 6`
 
-* **`alterar`**: altera o valor de um voo já registrado com parâmetros número do voo e novo valor em reais.
+### Saída
 
-* **`cancelar`**: cancela um voo já registrado com parâmetro número do voo.
+O maior element da sequência.
 
-* **`planejar`**: informa os dados de Jairzinho e termina o programa com parâmetros: código do aeroporto de saída e datas do primeiro e do último dias de férias.
+`29`
 
-*Obs.: Você pode supor que todos os voos ocorrem nos anos de 2021 ou 2022.*
+## 2. Busca em um vetor ordenado
 
-### Exemplo de entrada
+Dado um vetor de inteiros em ordem crescente e um número, faça um programa `busca_binaria.py` que realize uma busca binária e retorne o índice da posição desse número no vetor ou -1 se esse número não estiver no vetor.
 
-```
-registrar
-488
-XAP CGR
-05/08/2021
-29.87
+### Entrada
 
-registrar
-907
-CGR XAP
-01/08/2021
-300.43
-
-registrar
-767
-CGR XAP
-01/08/2021
-335.37
-
-alterar
-767 324.68
-
-cancelar
-907
-
-planejar
-CGR
-29/07/2021 06/08/2021
-```
-
-## Saída
-
-A saída deve informar toda vez que o valor de um voo foi alterado com a frase `X valor alterado de Y para Z`, onde X é o código do voo, Y é o valor anterior e Z é o novo valor. O final da saída deve conter duas linhas, uma com o código de origem e outra com o código do destino.
-
-### Exemplo de saída
+Uma sequência de números separados por espaço e um número *i*.
 
 ```
-767 valor alterado de 335.37 para 324.68
-767
-488
+0 4 5 6 7 10 10 15 20 23 24 25 26 29 29
+29
 ```
 
+### Saída
 
-## Critérios
+A posição de *i* na sequência ou -1.
 
-É obrigatório que você crie *classes* para os **voos** e para as **datas**. Complete o arquivo [passagem.py](./passagem.py), definindo as variáveis e funções necessárias. Por exemplo, um função para dizer se dois A e B voos são possíveis. Lembre-se de testar o código com o arquivo [entrada.in](./entrada.in).
+`13`
 
-## Como entregar?
+## 3. Formiga de Langton
 
-Na primeira linha do arquivo passagem.py você deve colocar seu RA para receber a nota, e, entregar o código dentro de um .zip via classroom.
-Por exemplo:
-> 210000.zip
+Um tabuleiro retangular tem diversos quadrados dispostos em uma grade de tamanho *m* x *n*, onde *m* e *n* são o número de linhas e o número de colunas, respectivamente. Cada um desses quadrados tem uma cor, que pode ser branco ou preto. Sobre esse tabuleiro, há uma formiga que se move de acordo com as seguintes regras:
 
-#### Peso: 3
+* estando em um quadrado branco, ela vira 90° para a direita, muda a cor do quadrado para preto e avança uma unidade;
+* estando em um quadrado preto, ela vira 90° para a esquerda, muda a cor do quadrado para branco e avança uma unidade.
+
+Essa é uma [formiga de Langton](https://pt.wikipedia.org/wiki/Formiga_de_Langton). Crie um programa `langton.py` que mostre o estado do tabuleiro após iterações. Suponha que a formiga inicia no quadrado central do tabuleiro virada para baixo e que ela não sairá do tabuleiro em nenhuma das entradas de teste.
+
+### Entrada
+
+A primeira linha contém os inteiros *t*, *m* e *n*. É garantido que *m* e *n* são ímpares. As demais linhas correspondem às linhas do tabuleiro, de forma que um ponto `.` representa um quadrado branco e um caractere `#` representa um quadrado preto.
+
+```
+4 9 9
+....#....
+....#....
+....#....
+....#....
+#########
+....#....
+....#....
+....#....
+....#....
+```
+
+### Saída
+
+O estado final do tabuleiro.
+
+```
+....#....
+....#....
+....#....
+....###..
+####..###
+....#....
+....#....
+....#....
+....#....
+```
+
+## 4. Quick-sort
+
+Faça um programa `quick_sort.py` que, ao receber uma lista de elementos, retorna essa lista em ordem crescente. Para isso, implemente o algoritmo de ordenação quick-sort.
+
+### Entrada
+
+Uma sequência de números separados por espaço.
+
+`8 10 13 17 14 16 2 19 7 2 18 16`
+
+### Saída
+
+A sequência em ordem crescente.
+
+`2 2 7 8 10 13 14 16 16 17 18 19`
+
+## 5. Quase palíndromo
+
+Uma string é um *k*-quase palíndromo se, ao compará-la com o seu inverso, tiver no máximo *k* caracteres diferentes. Por exemplo, `arara` é um *0*-quase palíndromo e `araro` é um *2*-quase palíndromo.
+
+Crie um programa `quase_palindromo.py` que verfique se uma palavra é um *k*-quase palíndromo.
+
+### Entrada
+
+A primeira linha contém um número *k* e a segunda linha contém uma string.
+
+```
+2
+araro
+```
+
+### Saída
+
+Um linha contendo `sim` ou `nao`, dependendo se a string é um *k*-quase palíndromo.
+
+`sim`
+
+## 6. Todas as somas que levam a *n*
+
+Dado um número *n*, encontre todas as combinações de somas de números positivos que resultam em *n*. Seu programa `soma_n.py` deverá imprimir todas as somas cujos termos estão em ordem crescente. As diferentes somas devem ser apresentadas em ordem lexicográfica, sem repetições.
+
+### Entrada
+
+O número *n*.
+
+`5`
+
+### Saída
+
+Todas as combinações em ordem crescente.
+
+```
+1+1+1+1+1=5
+1+1+1+2=5
+1+1+3=5
+1+2+2=5
+1+4=5
+2+3=5
+5=5
+```
+
+## 7. Um caminho para escapar do labirinto
+
+Faça um programa `caminho.py` que encontra um caminho (não necessariamente com comprimento mínimo) para atravessar um labirinto. O labirinto é representado por uma matriz sendo que as paredes são indicadas por `#`. A entrada e saída são indicadas por `E` e `S` respectivamente. É possível se mover em *4* direções: cima, baixo, esquerda e direita.
+
+### Entrada
+
+Um labirinto.
+
+```
+###E####
+#      #
+# #  # #
+# ## # #
+#  #   #
+#####S##
+```
+
+### Saída
+
+Um caminho na forma de uma sequência de coordenadas de matriz.
+
+```
+0 3
+1 3
+2 3
+2 4
+3 4
+4 4
+4 5
+5 5
+```
+
+## Correção
+
+Você pode discutir o lab e pedir ajuda no [Discord](https://discord.gg/cWJEU95G6M)
+
+Pontos:
+|Lab|Pontos|
+|---|------|
+|maximo.py|1|
+|busca_binaria.py|1|
+|langton.py|1|
+|quick_sort.py|2|
+|quase_palindromo.py|1|
+|soma_n.py|2|
+|caminho.py|2|
+
+É obrigatório resolver todos os exercícios usando recursão, caso contrário a nota será *0* zero. Os exercícios serão corrigidos de forma automática usando o comando:
+
+`python3 arquivo.py < entrada.in`
+
+Se seu código der erro nesse comando a nota não vai ser computada. Entregue somente um arquivo *zip* com os arquivos `.py` e nada mais, por exemplo:
+
+```
+210404.zip
+│   busca_binaria.py
+│   maximo.py
+│   ...
+│   caminho.py
+```
+
+#### Peso 4
+
+# [IMPORTANTE] Não plagiar!
+
+![plagio](spotted.png)
